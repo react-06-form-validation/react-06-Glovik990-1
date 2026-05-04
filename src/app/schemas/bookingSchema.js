@@ -30,11 +30,11 @@ export const createBookingSchema = (availableTimeSlots = []) =>
     ),
 
     timeSlot: z
-      .string()
-      .min(1, 'Selected time slot is required')
-      .refine((value) => availableTimeSlots.includes(value), {
-        message: 'Selected time slot is unavailable',
-      }),
+  .string()
+  .min(1, 'Selected time slot is required')
+  .refine((value) => availableTimeSlots.includes(value), {
+    message: 'Selected time slot is unavailable',
+  }),
 
     eventLink: z.string().url('Invalid URL. Please enter a valid event link'),
   });
