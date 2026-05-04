@@ -1,20 +1,15 @@
-// src/app/schemas/bookingSchema.js
 import { z } from 'zod';
 
 export const createBookingSchema = (availableTimeSlots = []) =>
   z.object({
-    bookerName: z
-      .string()
-      .min(2, 'Booker name must be at least 2 characters long'),
+    bookerName: z.string().min(2, 'Booker name must be at least 2 characters long'),
 
     bookerEmail: z.preprocess(
       (val) => (val === '' ? undefined : val),
       z.string().email('Invalid email address').optional()
     ),
 
-    eventName: z
-      .string()
-      .min(2, 'Event name must be at least 2 characters long'),
+    eventName: z.string().min(2, 'Event name must be at least 2 characters long'),
 
     eventDate: z.preprocess(
       (val) => (val ? new Date(val) : undefined),
@@ -34,13 +29,12 @@ export const createBookingSchema = (availableTimeSlots = []) =>
         .max(10, 'Number of Guests must be less than or equal to 10')
     ),
 
-    timeSlot: availableTimeSlots.length
-      ? z.enum([...availableTimeSlots], {
-          errorMap: () => ({ message: 'Selected time slot is unavailable' }),
-        })
-      : z.string().min(1, 'Selected time slot is required'),
-
-    eventLink: z
+    timeSlot: z
       .string()
-      .url('Invalid URL. Please enter a valid event link'),
+      .min(1, 'Selected time slot is required')
+      .refine((value) => availableTimeSlots.includes(value), {
+        message: 'Selected time slot is unavailable',
+      }),
+
+    eventLink: z.string().url('Invalid URL. Please enter a valid event link'),
   });
